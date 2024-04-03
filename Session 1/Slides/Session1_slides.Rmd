@@ -80,9 +80,32 @@ class: center, middle
 
 ## Getting Started with Posit
 
+To log into Posit Workbench, visit https://pwb.publichealthscotland.org/auth-sign-in and log in with the same credentials you use to log in to your laptop.
+
+Once you have signed in, you will need to set up a session by clicking the New Session button:
+
+INSERT IMAGE
+
+Then select an appropriate number of CPUs and Memory - the default is usually fine unless your are dealing with large amounts of data!
+
 ---
 
 ## Getting Around the Posit Session
+
+When your session starts there will usually be three panels - one on the left and two on the right:
+
+INSERT IMAGE
+
+You need to first acknowledge the terms and conditions of use by typing in the panel on the left (the console).
+
+
+Before starting any work in R, you will need to open a script by going to *File > New File > R Script*. Using a script allows you to save your work. 
+
+---
+
+## The Four Panels
+
+INSERT IMAGE
 
 ---
 
