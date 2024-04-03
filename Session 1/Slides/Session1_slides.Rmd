@@ -1,0 +1,72 @@
+---
+title: "Introduction to R"
+subtitle: "Session 1: Terminology"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+class: center, middle
+
+# `R`, RStudio and Posit
+
+---
+
+## Why `R`?
+
+`R` is a programming language designed around statistical analysis. 
+
+--
+
+### Advantages:
+
+- Shareable
+- Flexible
+- Open Source
+- Massive community
+
+--
+
+### Disadvantages:
+
+- Programming is hard
+
+---
+
+## RStudio and Posit
+
+`R` is what does the heavy lifting - think of it as the engine.
+
+RStudio/Posit are the wrappers that allow us to interact with `R` - like the controls of a car.
+
+RStudio and Posit are one and the same, in that Posit used to be called RStudio. At PHS we use a server based version of Posit called [Posit workbench](https://pwb.publichealthscotland.org/auth-sign-in).
+
+---
+
+## Programming
+
+Since `R` is a programming language, it's important to think about tasks from a programming perspective.
+
+The key in this is breaking tasks down into small chunks of what needs to be done. 
+
+Since you are familiar with doing analysis in other software (and to ease you in) we'll start by completing the tasks set out in Excel.
+
+While you are doing this, make a note of the steps you are carrying out while you are doing the analysis.
+
+---
+
+class: center, middle
+
+# Terminology
+
+---
+
+class: center, middle
+
+# `dplyr`
+

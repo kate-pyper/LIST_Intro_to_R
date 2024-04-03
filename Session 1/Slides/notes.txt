@@ -1,0 +1,35 @@
+Ideas for session:
+
+- Start with both tasks in excel - think about steps etc (if one step is actually a big leap think about what goes into that big step)
+- Collect ideas for steps to take in R for both 
+
+- Terminology: 
+	- RStudio interface, Posit/R/RStudio differences 
+	- variable types (data frames, vectors, character/numeric/logical)
+	- functions in general (mean, sum, basic calculations to get started with)
+
+- first task in R
+- chat around first task in R
+
+- dplyr verbs:
+	- select + associated functions (starts_with(), contains(), where(), if_any/all())
+	- filter (introduce logical statements when talking about filter)
+	- summarise (+ group_by())
+	- mutate (+ how mutate works with grouped tables?)
+	- across
+
+- second task in R
+- chat around second task in R
+
+- Introduce joins: common types of actual joins, filtering joins
+
+- third task in R
+- Chat around third task in R
+- Homework (similar to intro to R - maybe more prescriptive? Thoughts?)
+
+Tasks (KP: think these need work - need to look through more of the data sets...):
+Delayed Discharge Data
+
+- Task 1: Read in data, calculate a couple of column summaries, maybe extract some rows?
+- Task 2: Filter out a specific council area and calculate the total number of delayed bed days within each age group for any reason
+- Task 3: Filter out all council areas relating to your health board. Calculate the number of delayed bed days per bed. Within each age group which has the highest?
