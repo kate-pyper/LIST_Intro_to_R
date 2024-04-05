@@ -11,6 +11,10 @@ output:
       countIncrementalSlides: false
 ---
 
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
 ## This Session
 
 In this session we will focus on getting started on data analysis using Posit Workbench. By the end of this session, you will have the knowledge to:
@@ -207,16 +211,16 @@ Functions for reading in data usually have the form `read_filetype()` (e.g. `rea
 
 These functions usually come from non-default packages: `read_csv()` comes from the `readr` package and `read_xlsx()` comes from the `readxl` package.
 
-To read in the EXAMPLE data we would use:
+To read in data on HSCP populations we would use:
 
-<!-- remove eval=FALSE when I've decided which example to use -->
-```{r, eval = FALSE}
+
+```{r}
 # Load package for reading in data
 library(readr)
 
 # Read in the data: <- assigns a name to your data frame so that you can
 # refer to it in code.
-my_data <- read_csv("FILEPATH")
+populations <- read_csv("/conf/linkage/output/lookups/Unicode/Populations/Estimates/HSCP2019_pop_est_1981_2022.csv")
 ```
 
 ---
@@ -253,6 +257,8 @@ my_data$col # dollar notation
 
 These functions are build into the default packages in R and take a data frame as their argument.
 
+- `head()`, `tail()`: Prints the first or last few rows of the data frame to the console
+
 - `View()`: Opens data frame in a tab which allows you to view the data in a table
 
 - `str()`: Displays the structure of a data frame including column types
@@ -260,6 +266,25 @@ These functions are build into the default packages in R and take a data frame a
 - `names()`: Extracts the column names associated with a data frame
 
 - `summary()`: Produces column-wise summaries of the data
+
+---
+
+## Example: HSCP Populations
+
+```{r}
+head(populations)
+
+tail(populations)
+
+```
+
+---
+
+## Example: HSCP Populations
+
+```{r}
+summary(populations)
+```
 
 ---
 
@@ -291,7 +316,7 @@ As with data types, there are different types of vector. The most common types a
 
 - `Numeric`: Numbers. There is a class of vector `integer` for whole numbers, and `double` for decimal numbers. Integers are represented with `L` afterwards (e.g. `1L, 2L, 3L`). 
 
-- `Character`: Any text values, usually representing categorical data.
+- `Character`: Any text values, usually representing categorical data. Values are surrounded by quotation marks `""` or `''`
 
 - `Logical`: A binary value that takes the value `TRUE` or `FALSE`. These are usually generated using logical statements.
 
@@ -302,6 +327,10 @@ In some cases you may need to convert between types. You can use `as.type(x)` re
 ```{r, echo = TRUE}
 as.character(x) # you can see it's character because it has quotations around each value 
 ```
+
+---
+
+## Logical Statements
 
 ---
 
@@ -323,6 +352,19 @@ Some useful summary functions for vectors:
 
 ---
 
+## Example: HSCP Populations
+
+```{r}
+mean(populations$pop)
+
+unique(populations$year)
+
+unique(populations$sex_name)
+
+is.numeric(populations$age)
+```
+---
+
 class: center, middle
 
 # Manipulating Data
@@ -331,25 +373,139 @@ class: center, middle
 
 ## The Tidyverse
 
+The Tidyverse is a suite of packages that make manipulating, summarising and transforming various types of data by placing it into a consistent "grammar" of code that almost follows English. 
+
+One of the ways it does that is using the pipe operator, which you may see written as either `|>` or `%>%`. This sets a flow of code with the result of one line of code being passed into the first argument of the next function.
+
+The next two sections will focus on the package `dplyr` which provides different options for subsetting, summarising and transforming variables. 
+
+To demonstrate these functions generally, we'll use the mid year population estimates. Starting individually, then we will build into a single, readable pipeline.
+
+---
+
+## HSCP Populations Data
+
+We are still using the HSCP Populations Data, and we need to load the `dplyr` package.
+
+```{r}
+library(dplyr)
+
+head(populations)
+```
+---
+
+## Subsetting Rows: `filter()`
+
+We want to keep memory usage at a minimum, in order to minimise our use of Posit resources, and also to make our code as efficient as possible. One way that we can do that is by *filtering* out the rows that we are interested in to carry out our analysis. 
+
+Since the data goes back to 1981, we may want to filter out only the most recent data:
+
+```{r}
+populations_filtered <- populations %>% 
+  filter(year == 2022)
+
+head(populations_filtered)
+```
 ---
 
 ## Subsetting Columns: `select()`
 
----
+As with filtering rows, we may also want to *select* out only the specific columns that we want to use. 
 
-## Subsetting Rows: `filter()`
+The function for this is `select()` which can be used in a variety of ways. In particular, the column `year` contains no information since we filtered only the most recent year, the columns `sex` and `sex_name` contain the same information, so we might also consider removing one of these
+
+**Selecting using column names (directly)**
+
+We can simply specify column names within `select()` to specify which columns we would like to select. We can use `:` so select columns within a range. We can either specify the columns that we want to keep, or remove the columns that we don't want to keep using `!`. 
+
+```{r}
+populations_selected <- populations_filtered %>% 
+  select(hscp2019:age, sex_name:pop)
+
+populations_selected <- populations_filtered %>% 
+  select(!c(year, sex))
+```
+---
+## Subsetting Columns: `select()`
+
+**Select using column names (indirectly)**
+
+We might want to select out columns based on properties of their names. That is select columns whose name *starts with*, *ends with* or *contains* particular values (corresponding to that functions `starts_with()`, `ends_with()`, and `contains()` respectively). If we wanted only the HSCP information from this data set:
+
+```{r eval = FALSE}
+populations_filtered %>% 
+  select(starts_with("hscp"))
+```
+
+**Select based on values within column**
+
+We might be interested in extracting columns *where* a particular condition is met based on their values. For example only extract columns which contain numbers:
+
+```{r eval = FALSE}
+populations_filtered %>% 
+  select(where(is.numeric))
+```
 
 ---
 
 ## Summarising Data: `summarise()`
 
+We may be interested in *summarising* our data in some capacity. For example we could calculate the total population overall:
+
+```{r eval = FALSE}
+populations_selected %>% 
+  summarise(total_pop = sum(pop))
+```
+
+More likely we would want to *group by* some variable(s) first to calculate grouped summaries. To calculated the total male and female population within each HSCP:
+
+```{r}
+populations_summarised_group <- populations_selected %>% 
+  # hscps are the same grouping, but we want to keep both columns
+  group_by(hscp2019, hscp2019name, sex_name) %>% 
+  summarise(pop = sum(pop))
+
+populations_summarised_ungroup <- populations_selected %>% 
+  # hscps are the same grouping, but we want to keep both columns
+  group_by(hscp2019, hscp2019name, sex_name) %>% 
+  summarise(pop = sum(pop)) %>% 
+  # It is good practice to remove groupings unless you require them for a future step
+  ungroup()
+```
 ---
 
 ## Transforming Data: `mutate()`
 
+We may also need to transform a column or create a new column, for example calculating a proportion or a rate. In our populations example let's say we want to calculate the proportion of the total population in each of the groups in the summarised populations data.
+
+```{r}
+# Here it doesn't matter whether I use the ungrouped or grouped data
+denom <- sum(populations_summarised_ungroup$pop)
+
+populations_mutate <- populations_summarised_group %>% 
+  mutate(prop = pop/denom)
+```
+
+However if we use sum within the `mutate()` function we get some differences:
+
+```{r}
+# This produces the proportion of the total population as before
+populations_mutate_ungroup <- populations_summarised_ungroup %>% 
+  mutate(prop = pop/sum(pop))
+
+# This produces the proportion of the population within each HSCP due to the remaining groupings
+populations_mutate_group <- populations_summarised_group %>% 
+  mutate(prop = pop/sum(pop))
+```
+
 ---
 
 ## Repeating Calculations: `across()`
+
+---
+
+## Creating a Pipeline
+
 
 ---
 
