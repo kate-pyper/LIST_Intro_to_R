@@ -84,7 +84,9 @@ To log into Posit Workbench, visit https://pwb.publichealthscotland.org/auth-sig
 
 Once you have signed in, you will need to set up a session by clicking the New Session button:
 
-INSERT IMAGE
+```{r, echo=FALSE, out.width="75%", fig.align="center"}
+knitr::include_graphics("./imgs/posit_fresh.PNG")
+```
 
 Then select an appropriate number of CPUs and Memory - the default is usually fine unless your are dealing with large amounts of data!
 
@@ -94,38 +96,230 @@ Then select an appropriate number of CPUs and Memory - the default is usually fi
 
 When your session starts there will usually be three panels - one on the left and two on the right:
 
-INSERT IMAGE
+```{r, echo=FALSE, out.width="75%", fig.align="center"}
+knitr::include_graphics("./imgs/three_panels.PNG")
+```
 
-You need to first acknowledge the terms and conditions of use by typing in the panel on the left (the console).
+
+You need to first acknowledge the [Acceptable Usage Policy](https://github.com/Public-Health-Scotland/R-Resources/blob/master/posit_workbench_acceptable_use_policy.md) by typing in the panel on the left (the console).
 
 
 Before starting any work in R, you will need to open a script by going to *File > New File > R Script*. Using a script allows you to save your work. 
+---
+
+## The Four Panels
+
+```{r, echo=FALSE, out.width="90%", fig.align="center"}
+knitr::include_graphics("./imgs/four_panels.PNG")
+```
 
 ---
 
 ## The Four Panels
 
-INSERT IMAGE
+**The script** is where you will do most of your work. This is where you should type your code, and this is what you should be saving as you go along. 
 
+--
+
+**The console** is where a lot of your output will appear from numerical calculations. You wouldn't typically do a lot of coding in here but it can be used for small calculations that you aren't that bothered about saving.
+
+--
+
+**The environment** contains all of the possible objects that you have available to use in your R session. If you create an object then it will appear as a name in this pane.
+
+--
+
+**The Files/Plots/Help panel** contains a variety of different things. Using the file tab, you can browse through available files and folders. When you start producing plots, these will appear in this panel. Help files can be viewed here under the Help tab - these will help you to use different aspects of R programming.
 ---
 
 ## From Excel to R
 
+In Excel, you work with tables of data where each row of the table relates to an observation and each column relates to a variable within the data set. Multiple tables might be stored across multiple sheets
+--
+
+In R it is exactly the same, though we refer to the tables as *data frames*, and multiple data frames can be stored in the environment.
+
+--
+
+When using Excel, you navigate to a file, click to open the file and then you manipulate the table using formulas and by point-and-click processes. It is then difficult to share the steps of the analysis with other people.
+--
+
+In R you specify a file path, and tell R how to open that file. Then you use commands (*functions*) to work with the data which can be saved as a record of the analysis performed.
+
 ---
 
-## Vectors
+## Opening Data in R
+
+In R we need to be specific about where the file is stored on a computer, and then how to read the information depending on the type of file.
+
+For the first part we specify the file path. For today's session the file path will be *`r stringr::str_replace(getwd(), "Slides", "Data")`*.
+
+For the second part we need to use a function which matches the file type. 
 
 ---
 
-## Vector Types
+## Packages
+
+R is open source, and is also community contributed. This means that it has vast functionality, but also means that to load (or even hold) every single possible function that has ever been written would be impossible.
+
+Packages hold sets of related functions that individual users can use as needed. By default R is downloaded and opens with a small set of core packages containing the most fundamental functionality to R. 
+
+Anything over and above these core packaged will need to be installed by the user. The easiest way to do this is to use the `install.packages()` function (*You only need to install a package once*): 
+
+```{r eval = FALSE}
+# Replace packagename with the name of the package that you want to install
+install.packages("packagename") 
+```
+
+Once you have installed a package, if you want to use functions within this package you will need to load the package: 
+```{r eval = FALSE}
+library(packagename)
+```
+Once you have done this you will be able to use the functionality within that package for your current R session.
+---
+
+## Functions
+
+Functions are a fundamental part of programming in R. Everything that you do in R will use a function (even if you are not aware that it is using a function).
+
+Functions will take the form `functionname(args)` and will usually be represented in text as `functionname()`.
+
+Each function will take some arguments within the brackets which specify parameters that the function needs to run. You can view the available arguments for any function in packages that you have loaded:
+
+```{r eval=FALSE}
+?functionname
+```
+
+This will open a page in the Help pane showing the help file for the function requested.
+
+If you haven't loaded the package, or just want to search all help files for all installed pages for a key word:
+
+```{r eval = FALSE}
+??keyword
+```
+
+Will produce a set of search results. (Note depending on the number or type of packages installed this can take a while!)
+
+---
+## Reading in an Example Data Set
+
+Functions for reading in data usually have the form `read_filetype()` (e.g. `read_csv()` would read in a .csv file, and `read_xlsx()` would read in a .xslx file). 
+
+These functions usually come from non-default packages: `read_csv()` comes from the `readr` package and `read_xlsx()` comes from the `readxl` package.
+
+To read in the EXAMPLE data we would use:
+
+<!-- remove eval=FALSE when I've decided which example to use -->
+```{r, eval = FALSE}
+# Load package for reading in data
+library(readr)
+
+# Read in the data: <- assigns a name to your data frame so that you can
+# refer to it in code.
+my_data <- read_csv("FILEPATH")
+```
 
 ---
 
 ## Using Data Frames
 
+Once we have our data named in R we may want to look at specific elements of the data.
+
+To do this we can use *square bracket notation*:
+
+```{r, eval = FALSE}
+my_data[i, j]
+```
+
+would return the value in the `i`th row and `j`th column. We can similarly extract whole rows or whole columns:
+
+```{r, eval = FALSE}
+my_data[i, ] # ith row
+
+my_data[ ,j] # jth column
+```
+
+These work with numeric values, but we may want to extract a column based on its name. We can do this using square bracket notation, or we can use *dollar notation* which is more common:
+
+```{r, eval = FALSE}
+my_data[ , "col"] # square bracket notation
+
+my_data$col # dollar notation
+```
+
 ---
 
-## Functions
+## Useful Functions for Data Frames
+
+These functions are build into the default packages in R and take a data frame as their argument.
+
+- `View()`: Opens data frame in a tab which allows you to view the data in a table
+
+- `str()`: Displays the structure of a data frame including column types
+
+- `names()`: Extracts the column names associated with a data frame
+
+- `summary()`: Produces column-wise summaries of the data
+
+---
+
+## Vectors
+
+Vectors in R represent a collection of related values of the same type (i.e. all numbers, all text, all dates etc.). For example when you use `names()` to get the names of columns in a data frame this is a vector. More importantly, when you extract a *column* of a data frame this is a vector.
+
+This is important because a lot of functions in R are vectorised - that is they work with vector inputs. 
+
+It is this which allows us to transform columns of data by multiplying, adding, subtracting dividing. This allows us to calculate column summaries.
+
+If you need to create a new vector you can use the function `c()`, or there are special functions `rep()` and `seq()` for vectors which have repeating patterns and sequences. The following can all be used to create the vector 1, 2, 3, 1, 2, 3
+
+```{r}
+x <- c(1, 2, 3, 1, 2, 3)
+
+x <- c(1:3, 1:3, 1:3) # : is shorthand for a sequence increasing by 1
+
+x <- c(seq(1, 3, by = 1), seq(1, 3, by = 1), seq(1, 3, by = 1))
+
+x <- rep(seq(1, 3, by = 1), times = 3)
+```
+
+---
+
+## Vector Types
+
+As with data types, there are different types of vector. The most common types are:
+
+- `Numeric`: Numbers. There is a class of vector `integer` for whole numbers, and `double` for decimal numbers. Integers are represented with `L` afterwards (e.g. `1L, 2L, 3L`). 
+
+- `Character`: Any text values, usually representing categorical data.
+
+- `Logical`: A binary value that takes the value `TRUE` or `FALSE`. These are usually generated using logical statements.
+
+There are also types to deal with date objects. 
+
+In some cases you may need to convert between types. You can use `as.type(x)` replacing `type` with the target vector type, so transforming `x` into a character vector would be:
+
+```{r, echo = TRUE}
+as.character(x) # you can see it's character because it has quotations around each value 
+```
+
+---
+
+## Useful Functions for Vectors
+
+Some useful summary functions for vectors:
+
+- `mean()`, `median()`, `sd()`, `var()` - calculates the mean/median/standard deviation/variance of a numeric vector
+
+- `paste()`, `paste0()` - combines character vectors, `paste()` allows you to specify a separator, `paste0()` does not
+
+- `is.type()` (replacing `type` with relevant vector type) - allows you to test whether a vector is of a specified type
+
+- `is.na()`, `is.infinite()` - allows you to test whether elements of a vector are missing (`NA`), or infinite (`Inf`/`-Inf`) 
+
+- `sum()`, `cumsum()` - produces the sum or cumulative sum of a numeric vector
+
+- `unique()` - provides the unique values within a vector
 
 ---
 
