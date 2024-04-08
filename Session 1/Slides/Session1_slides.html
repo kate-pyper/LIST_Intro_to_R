@@ -376,7 +376,7 @@ x &lt;- rep(seq(1, 3, by = 1), times = 3)
 
 As with data types, there are different types of vector. The most common types are:
 
-- `Numeric`: Numbers. There is a class of vector `integer` for whole numbers, and `double` for decimal numbers. Integers are represented with `L` afterwards (e.g. `1L, 2L, 3L`). 
+- `Numeric`: Numbers. There is a class of vector `integer` for whole numbers, and `double` for decimal numbers. Integers are represented with `L` afterwards (e.g. `1L`, `2L`, `3L`). 
 
 - `Character`: Any text values, usually representing categorical data. Values are surrounded by quotation marks `""` or `''`
 
@@ -398,6 +398,18 @@ as.character(x) # you can see it's character because it has quotations around ea
 ---
 
 ## Logical Statements
+
+A logical statement is one which will return logical vectors (`TRUE`/`FALSE`). These will generally be comparisons:
+
+- equal to - `==`
+
+- less than, greater than, less than or equal to, greater than or equal to: `&lt;`, `&gt;`, `&lt;=` `&gt;=`
+
+- not - `!` usually put at the front of the statement (not equal to becomes `!=`)
+
+- logical and, logical or - `&amp;`, `|`
+
+There are some functions which act as comparisons, such as functions to test whether an object is of a particular type (e.g. `is.numeric()`, `is.character()`)
 
 ---
 
@@ -455,6 +467,29 @@ is.numeric(populations$age)
 ```
 ## [1] TRUE
 ```
+---
+
+## Example: HSCP Populations
+
+You can treat logical values as numeric, which means that you can easily find the number of values meeting a condition (`sum()`), or the proportion of values meeting a condition (`mean()`)
+
+
+```r
+sum(populations$year==2022)
+```
+
+```
+## [1] 5642
+```
+
+```r
+mean(populations$pop &gt; 1000)
+```
+
+```
+## [1] 0.2844652
+```
+
 ---
 
 class: center, middle
@@ -579,24 +614,53 @@ populations_selected %&gt;%
   summarise(total_pop = sum(pop))
 ```
 
-More likely we would want to *group by* some variable(s) first to calculate grouped summaries. To calculated the total male and female population within each HSCP:
+More likely we would want to *group by* some variable(s) first to calculate grouped summaries. To calculate the total population in each age group within each HSCP:
 
 
 ```r
 populations_summarised_group &lt;- populations_selected %&gt;% 
   # hscps are the same grouping, but we want to keep both columns
-  group_by(hscp2019, hscp2019name, sex_name) %&gt;% 
+  group_by(hscp2019, hscp2019name, age) %&gt;% 
   summarise(pop = sum(pop))
+```
+---
 
+## A note on `group_by()`
+
+The `group_by()` function creates useful groupings in out data, but we need to be a little careful when we use it. In the previous example we used `group_by()` to find the population within each age. when we look at our new data frame, it still maintains a grouping structure:
+
+
+```r
+head(populations_summarised_group, n=1)
+```
+
+```
+## # A tibble: 1 × 4
+## # Groups:   hscp2019, hscp2019name [1]
+##   hscp2019  hscp2019name    age   pop
+##   &lt;chr&gt;     &lt;chr&gt;         &lt;dbl&gt; &lt;dbl&gt;
+## 1 S37000001 Aberdeen City     0  2054
+```
+
+Each time you summarise, the last level of the grouping structure will be removed - to our data frame is no longer grouped by `age` in this case.
+
+---
+
+## Removing grouping structure: `ungroup()`
+
+We might want to retain this grouping structure, in which case we don't want to do anything. If we don't want to use this grouping going forward we would need to *ungroup* our data:
+
+
+```r
 populations_summarised_ungroup &lt;- populations_selected %&gt;% 
   # hscps are the same grouping, but we want to keep both columns
-  group_by(hscp2019, hscp2019name, sex_name) %&gt;% 
+  group_by(hscp2019, hscp2019name, age) %&gt;% 
   summarise(pop = sum(pop)) %&gt;% 
   # It is good practice to remove groupings unless you require them for a future step
   ungroup()
 ```
----
 
+---
 ## Transforming Data: `mutate()`
 
 We may also need to transform a column or create a new column, for example calculating a proportion or a rate. In our populations example let's say we want to calculate the proportion of the total population in each of the groups in the summarised populations data.
@@ -610,7 +674,9 @@ populations_mutate &lt;- populations_summarised_group %&gt;%
   mutate(prop = pop/denom)
 ```
 
-However if we use sum within the `mutate()` function we get some differences:
+--
+
+We can do the calculation within `mutate()`, but we need to be careful about grouping:
 
 
 ```r
@@ -625,13 +691,24 @@ populations_mutate_group &lt;- populations_summarised_group %&gt;%
 
 ---
 
-## Repeating Calculations: `across()`
-
----
-
 ## Creating a Pipeline
 
+Putting that whole analysis into one pipeline can help to make it clear what the process you are following is. So here, the goal is to get the proportion of the population of an area which falls into a specific age group. 
 
+
+```r
+pops_by_age &lt;- populations %&gt;% 
+  # filter out appropriate year
+  filter(year == 2022) %&gt;% 
+  # select columns
+  select(!c(year, sex)) %&gt;% 
+  # group by hscp and age for summary
+  group_by(hscp2019, hscp2019name, age) %&gt;% 
+  # sum to find the total population
+  summarise(pop = sum(pop)) %&gt;% 
+  # Create new column containing population divided by total population
+  mutate(prop = pop/sum(pop))
+```
 ---
 
 class: center, middle
@@ -642,13 +719,88 @@ class: center, middle
 
 ## Binding Rows: `bind_rows()`
 
+We may have two (or more) data sets containing the same information that we want to stack on top of one another to create a bigger data set. In R we want to bind the rows. A typical use for row binding is where we have information that is separated by groups, and we want to add total information.
+
+In our population example, we might want to produce a data frame that has information on the population for males, females and overall. We first create the data set that contains the total summaries:
+
+
+```r
+pops_by_age &lt;- populations %&gt;% 
+  # filter out appropriate year
+  filter(year == 2022) %&gt;% 
+  # select columns
+  select(!c(year, sex)) %&gt;% 
+  # group by hscp and age for summary
+  group_by(hscp2019, hscp2019name, age) %&gt;% 
+  # sum to find the total population
+  summarise(pop = sum(pop)) %&gt;% 
+  # add column for sex
+  mutate(sex_name = "All")
+```
+
+---
+
+## Binding rows: `bind_rows()`
+
+Then we need to extract the relevant data from the original data set before combining: 
+
+
+```r
+pops &lt;- populations %&gt;% 
+  # filter out appropriate year
+  filter(year==2022) %&gt;% 
+  # Select columns for compatibility
+  select(!c(year, sex, hscp2018:hscp2016)) %&gt;%
+  # bind rows
+  bind_rows(pops_by_age) %&gt;%
+  # Sort data so we can see the result
+  arrange(hscp2019name, age)
+
+pops
+```
+
+```
+## # A tibble: 8,463 × 5
+##    hscp2019  hscp2019name    age sex_name   pop
+##    &lt;chr&gt;     &lt;chr&gt;         &lt;dbl&gt; &lt;chr&gt;    &lt;dbl&gt;
+##  1 S37000001 Aberdeen City     0 M         1064
+##  2 S37000001 Aberdeen City     0 F          990
+##  3 S37000001 Aberdeen City     0 All       2054
+##  4 S37000001 Aberdeen City     1 M         1037
+##  5 S37000001 Aberdeen City     1 F          982
+##  6 S37000001 Aberdeen City     1 All       2019
+##  7 S37000001 Aberdeen City     2 M         1085
+##  8 S37000001 Aberdeen City     2 F         1075
+##  9 S37000001 Aberdeen City     2 All       2160
+## 10 S37000001 Aberdeen City     3 M         1140
+## # ℹ 8,453 more rows
+```
 ---
 
 ## Merging Columns (Joins)
 
+You may find yourself in a situation where you are pulling different pieces of data from multiple sources, that you need to combine. When combining column wise you would use a join which will match observations based on some key. 
+
+The joins available in R are the same as SQL joins:
+
+- Left join: `left_join(df1, df2)` joins the two data sets and keeps all observations in `df1` regardless of whether there is a match in `df2`
+
+- Right join: `right_join(df1, df2)` joins the two data sets and keeps all observations in `df2` regardless of whether there is a match in `df1`
+
+- Full join: `full_join(df1, df2)` joins the two data sets and keeps all observations in both data sets
+
+- Inner join: `inner_join(df1, df2)` joins the two data sets and keeps only observations which have a match in both data sets
+
 ---
 
 ## Filtering Joins
+
+In some cases you may be interested in filtering a data set without joining. To do this you can use filtering joins:
+
+- `semi_join(df1, df2)` - returns all rows in `df1` where there is a match in `df2`
+
+- `anti_join(df1, df2)` - returns all rows in `df1` where there is not a match in `df2`
+
     </textarea>
 <style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
