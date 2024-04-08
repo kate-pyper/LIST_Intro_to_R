@@ -3,6 +3,7 @@ title: "Introduction to R"
 subtitle: "Session 1: Terminology"
 output:
   xaringan::moon_reader:
+    css: ["xaringan-themer.css"]
     lib_dir: libs
     nature:
       ratio: "16:9"
