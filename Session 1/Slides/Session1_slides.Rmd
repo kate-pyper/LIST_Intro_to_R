@@ -30,13 +30,13 @@ In this session we will focus on getting started on data analysis using Posit Wo
 
 class: center, middle
 
-# `R`, RStudio and Posit
+# R, RStudio and Posit
 
 ---
 
-## Why `R`?
+## Why R?
 
-`R` is a programming language designed around statistical analysis. 
+R is a programming language designed around statistical analysis. 
 
 --
 
@@ -57,9 +57,9 @@ class: center, middle
 
 ## RStudio and Posit
 
-`R` is what does the heavy lifting - think of it as the engine.
+R is what does the heavy lifting - think of it as the engine.
 
-RStudio/Posit are the wrappers that allow us to interact with `R` - like the controls of a car.
+RStudio/Posit are the wrappers that allow us to interact with R - like the controls of a car.
 
 RStudio and Posit are one and the same, in that Posit used to be called RStudio. At PHS we use a server based version of Posit called [Posit workbench](https://pwb.publichealthscotland.org/auth-sign-in).
 
@@ -67,7 +67,7 @@ RStudio and Posit are one and the same, in that Posit used to be called RStudio.
 
 ## Programming
 
-Since `R` is a programming language, it's important to think about tasks from a programming perspective.
+Since R is a programming language, it's important to think about tasks from a programming perspective.
 
 The key in this is breaking tasks down into small chunks of what needs to be done. 
 
@@ -497,9 +497,11 @@ populations_summarised_group <- populations_selected %>%
 
 The `group_by()` function creates useful groupings in out data, but we need to be a little careful when we use it. In the previous example we used `group_by()` to find the population within each age. when we look at our new data frame, it still maintains a grouping structure:
 
-```{r}
-head(populations_summarised_group, n=1)
+```{r, highlight.output=2}
+populations_summarised_group
 ```
+
+
 
 Each time you summarise, the last level of the grouping structure will be removed - to our data frame is no longer grouped by `age` in this case.
 
@@ -516,6 +518,8 @@ populations_summarised_ungroup <- populations_selected %>%
   summarise(pop = sum(pop)) %>% 
   # It is good practice to remove groupings unless you require them for a future step
   ungroup()
+
+populations_summarised_ungroup
 ```
 
 ---
