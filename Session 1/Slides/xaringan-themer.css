@@ -35,12 +35,12 @@
   --code-font-family: 'Source Code Pro';
   --code-font-is-google: 1;
   --base-font-size: 17px;
-  --text-font-size: 0.7rem;
+  --text-font-size: 1rem;
   --code-font-size: 0.8rem;
-  --code-inline-font-size: 0.8em;
-  --header-h1-font-size: 2.75rem;
-  --header-h2-font-size: 2.25rem;
-  --header-h3-font-size: 1.75rem;
+  --code-inline-font-size: 1em;
+  --header-h1-font-size: 2.5rem;
+  --header-h2-font-size: 2rem;
+  --header-h3-font-size: 1.5rem;
 
   /* Colors */
   --text-color: #000;
@@ -49,11 +49,14 @@
   --link-color: rgb(249, 38, 114);
   --code-highlight-color: rgba(255,255,0,0.5);
   --inverse-text-color: #d6d6d6;
-  --inverse-background-color: #272822;
+  --inverse-background-color: #1E7F84;
+  --inverse2-background-color: #3F3685;
+  --inverse3-background-color: #6B5C85;
+  --inverse4-background-color: #83BB26;
   --inverse-header-color: #f3f3f3;
   --inverse-link-color: rgb(249, 38, 114);
-  --title-slide-background-color: #272822;
-  --title-slide-text-color: #d6d6d6;
+  --title-slide-background-color: #9B4393;
+  --title-slide-text-color: #FFF;
   --header-background-color: #000;
   --header-background-text-color: #FFF;
 }
@@ -74,7 +77,7 @@ h1, h2, h3 {
 }
 .remark-slide-content {
   background-color: var(--background-color);
-  font-size: 0.6;
+  font-size: var(--text-font-size);
   padding: 16px 64px 16px 64px;
   width: 100%;
   height: 100%;
@@ -99,9 +102,9 @@ h1, h2, h3 {
   color: #000;
 }
 .remark-slide-number {
-  color: #272822;
+  color: #000;
   opacity: 1;
-  font-size: 0.9rem;
+  font-size: 0.7rem;
 }
 strong {
   font-weight: bold;
@@ -114,7 +117,7 @@ a, a > code {
   position: absolute;
   bottom: 60px;
   padding-right: 4em;
-  font-size: 0.9em;
+  font-size: 0.7em;
 }
 .remark-code-line-highlighted {
   background-color: var(--code-highlight-color);
@@ -124,10 +127,25 @@ a, a > code {
   color: var(--inverse-text-color);
   
 }
-.inverse h1, .inverse h2, .inverse h3 {
+.inverse2 {
+  background-color: var(--inverse2-background-color);
+  color: var(--inverse-text-color);
+  
+}
+.inverse3 {
+  background-color: var(--inverse3-background-color);
+  color: var(--inverse-text-color);
+  
+}
+.inverse4 {
+  background-color: var(--inverse4-background-color);
+  color: var(--inverse-text-color);
+  
+}
+.inverse h1, .inverse h2, .inverse h3, .inverse2 h1, .inverse2 h2, .inverse2 h3, .inverse3 h1, .inverse3 h2, .inverse3 h3, .inverse4 h1, .inverse4 h2, .inverse4 h3 {
   color: var(--inverse-header-color);
 }
-.inverse a, .inverse a > code {
+.inverse a, .inverse a > code, .inverse2 a, .inverse2 a > code, .inverse3 a, .inverse3 a > code, .inverse4 a, .inverse4 a > code {
   color: var(--inverse-link-color);
 }
 .title-slide, .title-slide h1, .title-slide h2, .title-slide h3 {

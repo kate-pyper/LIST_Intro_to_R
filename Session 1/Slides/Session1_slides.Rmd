@@ -28,7 +28,7 @@ In this session we will focus on getting started on data analysis using Posit Wo
 
 ---
 
-class: center, middle
+class: center, middle, inverse
 
 # R, RStudio and Posit
 
@@ -77,13 +77,13 @@ Since R is a programming language, it's important to think about tasks from a pr
 
 The key in this is breaking tasks down into small chunks of what needs to be done. 
 
-Since you are familiar with doing analysis in other software (and to ease you in) we'll start by completing the tasks set out in Excel.
+Since you are familiar with doing analysis in other software (and to ease you in) you'll start by completing the tasks set out in Excel.
 
 While you are doing this, make a note of the steps you are carrying out while you are doing the analysis.
 
 ---
 
-class: center, middle
+class: center, middle, inverse2
 
 # Terminology
 
@@ -399,7 +399,7 @@ mean(populations$pop > 1000)
 
 ---
 
-class: center, middle
+class: center, middle, inverse3
 
 # Manipulating Data
 
@@ -579,7 +579,7 @@ pops_by_age <- populations %>%
 ```
 ---
 
-class: center, middle
+class: center, middle, inverse4
 
 # Merging data
 
