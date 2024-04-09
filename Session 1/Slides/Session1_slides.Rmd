@@ -59,9 +59,15 @@ R is a programming language designed around statistical analysis.
 
 R is what does the heavy lifting - think of it as the engine.
 
-RStudio/Posit are the wrappers that allow us to interact with R - like the controls of a car.
+RStudio/Posit are the wrappers that allow us to interact with R - like the controls of a car. There are a variety of ways to use R through Posit, and general code will work in exactly the same way across all of these, though there may be changes to how files are accessed.
 
-RStudio and Posit are one and the same, in that Posit used to be called RStudio. At PHS we use a server based version of Posit called [Posit workbench](https://pwb.publichealthscotland.org/auth-sign-in).
+- RStudio Desktop - an application downloaded and running on your own machine
+
+- Posit Cloud (formerly RStudio Cloud) - A cloud based service that runs within your browser
+
+- Posit Workbench - A server based version which is typically used by organisations
+
+RStudio and Posit are one and the same, in that Posit used to be called RStudio. At PHS we use [Posit workbench](https://pwb.publichealthscotland.org/auth-sign-in).
 
 ---
 
@@ -140,6 +146,7 @@ knitr::include_graphics("./imgs/four_panels.PNG")
 ## From Excel to R
 
 In Excel, you work with tables of data where each row of the table relates to an observation and each column relates to a variable within the data set. Multiple tables might be stored across multiple sheets
+
 --
 
 In R it is exactly the same, though we refer to the tables as *data frames* or *tibbles*, and multiple data frames can be stored in the environment.
@@ -147,6 +154,7 @@ In R it is exactly the same, though we refer to the tables as *data frames* or *
 --
 
 When using Excel, you navigate to a file, click to open the file and then you manipulate the table using formulas and by point-and-click processes. It is then difficult to share the steps of the analysis with other people.
+
 --
 
 In R you specify a file path, and tell R how to open that file. Then you use commands (*functions*) to work with the data which can be saved as a record of the analysis performed.
