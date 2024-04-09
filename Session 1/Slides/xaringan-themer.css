@@ -25,7 +25,7 @@
 
 :root {
   /* Fonts */
-  --text-font-family: 'Noto Sans';
+  --text-font-family: 'arial';
   --text-font-is-google: 1;
   --text-font-family-fallback: -apple-system, BlinkMacSystemFont, avenir next, avenir, helvetica neue, helvetica, Ubuntu, roboto, noto, segoe ui, arial;
   --text-font-base: sans-serif;
@@ -44,10 +44,11 @@
 
   /* Colors */
   --text-color: #000;
-  --header-color: #000;
+  --header-color: #3F3685;
   --background-color: #FFF;
-  --link-color: rgb(249, 38, 114);
-  --code-highlight-color: rgba(255,255,0,0.5);
+  --link-color: #3F3685;
+  --link-hover: #8FBFC2;
+  --code-highlight-color: #8FBFC2;
   --inverse-text-color: #d6d6d6;
   --inverse-background-color: #1E7F84;
   --inverse2-background-color: #3F3685;
@@ -112,6 +113,9 @@ strong {
 a, a > code {
   color: var(--link-color);
   text-decoration: none;
+}
+a:hover {
+  color: var(--link-hover);
 }
 .footnote {
   position: absolute;
