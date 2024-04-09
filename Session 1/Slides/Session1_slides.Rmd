@@ -195,12 +195,12 @@ Once you have done this you will be able to use the functionality within that pa
 
 Functions are a fundamental part of programming in R. Everything that you do in R will use a function (even if you are not aware that it is using a function).
 
-Functions will take the form `functionname(args)` and will usually be represented in text as `functionname()`.
+Functions will take the form `function_name(args)` and will usually be represented in text as `function_name()`.
 
 Each function will take some arguments within the brackets which specify parameters that the function needs to run. You can view the available arguments for any function in packages that you have loaded:
 
 ```{r eval=FALSE}
-?functionname
+?function_name
 ```
 
 This will open a page in the Help pane showing the help file for the function requested.
@@ -231,7 +231,7 @@ library(readr)
 # refer to it in code.
 populations <- read_csv("/conf/linkage/output/lookups/Unicode/Populations/Estimates/HSCP2019_pop_est_1981_2022.csv")
 ```
-
+The symbol `<-` is the *assignment operator* which assigns the object to a name within the environment. This is needed for you to reuse the data in further analysis. If not used, the data will just print to the console.
 ---
 
 ## Using Data Frames
@@ -301,7 +301,7 @@ summary(populations)
 
 Vectors in R represent a collection of related values of the same type (i.e. all numbers, all text, all dates etc.). For example when you use `names()` to get the names of columns in a data frame this is a vector. More importantly, when you extract a *column* of a data frame this is a vector.
 
-This is important because a lot of functions in R are vectorised - that is they work with vector inputs. 
+This is important because a lot of functions in R produce output based on a vector of inputs. 
 
 It is this which allows us to transform columns of data by multiplying, adding, subtracting dividing. This allows us to calculate column summaries.
 
@@ -325,7 +325,7 @@ As with data types, there are different types of vector. The most common types a
 
 - `Numeric`: Numbers. There is a class of vector `integer` for whole numbers, and `double` for decimal numbers. Integers are represented with `L` afterwards (e.g. `1L`, `2L`, `3L`). 
 
-- `Character`: Any text values, usually representing categorical data. Values are surrounded by quotation marks `""` or `''`
+- `Character`: Any text values, usually representing categorical data. Values are surrounded by quotation marks `""` or `''` (though double quotations are always preferred!) 
 
 - `Logical`: A binary value that takes the value `TRUE` or `FALSE`. These are usually generated using logical statements.
 
@@ -392,7 +392,7 @@ is.numeric(populations$age)
 You can treat logical values as numeric, which means that you can easily find the number of values meeting a condition (`sum()`), or the proportion of values meeting a condition (`mean()`)
 
 ```{r}
-sum(populations$year==2022)
+sum(populations$year == 2022)
 
 mean(populations$pop > 1000)
 ```
@@ -450,7 +450,7 @@ The function for this is `select()` which can be used in a variety of ways. In p
 
 **Selecting using column names (directly)**
 
-We can simply specify column names within `select()` to specify which columns we would like to select. We can use `:` so select columns within a range. We can either specify the columns that we want to keep, or remove the columns that we don't want to keep using `!`. 
+We can simply specify column names within `select()` to specify which columns we would like to select. We can use `:` to select columns within a range. We can either specify the columns that we want to keep, or remove the columns that we don't want to keep using `!`. 
 
 ```{r}
 populations_selected <- populations_filtered %>% 
@@ -511,7 +511,7 @@ populations_summarised_group
 
 
 
-Each time you summarise, the last level of the grouping structure will be removed - to our data frame is no longer grouped by `age` in this case.
+Each time you summarise, the last level of the grouping structure will be removed - so our data frame is no longer grouped by `age` in this case.
 
 ---
 
@@ -614,7 +614,7 @@ Then we need to extract the relevant data from the original data set before comb
 ```{r}
 pops <- populations %>% 
   # filter out appropriate year
-  filter(year==2022) %>% 
+  filter(year == 2022) %>% 
   # Select columns for compatibility
   select(!c(year, sex, hscp2018:hscp2016)) %>%
   # bind rows
@@ -642,11 +642,26 @@ The joins available in R are the same as SQL joins:
 
 ---
 
-## Filtering Joins
+## Example: Datazone Populations to Locality Populations
 
-In some cases you may be interested in filtering a data set without joining. To do this you can use filtering joins:
+Sometimes we may have data at a lower level than we need, and we want to aggregate it up. Usually this means using a lookup table which we join to the data to give use the higher level groups which we can then summarise by.
 
-- `semi_join(df1, df2)` - returns all rows in `df1` where there is a match in `df2`
+```{r}
+# Read in the data
+dz_pop <- read_rds("/conf/LIST_analytics/West Hub/03 - Training/Posit Training Cross Team/Introduction to R/Session 1/Data/dz_pops.rds")
+lookup <- read_csv("/conf/linkage/output/lookups/Unicode/Geography/HSCP Locality/HSCP Localities_DZ11_Lookup_20230804.csv")
 
-- `anti_join(df1, df2)` - returns all rows in `df1` where there is not a match in `df2`
+locality_pop <- dz_pop %>% 
+  # Filter out correct year's data
+  filter(year == max(year)) %>%
+  # Join data set with lookup file: because of pipe this is equivalent to left_join(df1, lookup) 
+  # where df1 is the filtered version of dz_pop
+  left_join(lookup) %>% 
+  # Group by locality
+  group_by(hscp_locality) %>%
+  # Calculate the total population
+  summarise(pop = sum(pop))
+# join population data and lookup data
+
+```
 
