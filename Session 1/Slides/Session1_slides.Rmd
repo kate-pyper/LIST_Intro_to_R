@@ -99,20 +99,20 @@ Then select an appropriate number of CPUs and Memory - the default is usually fi
 
 ## Getting Around the Posit Session
 
-When your session starts there will usually be three panels - one on the left and two on the right:
+When your session starts there will usually be three panes - one on the left and two on the right:
 
 ```{r, echo=FALSE, out.width="75%", fig.align="center"}
 knitr::include_graphics("./imgs/three_panels.PNG")
 ```
 
 
-You need to first acknowledge the [Acceptable Usage Policy](https://github.com/Public-Health-Scotland/R-Resources/blob/master/posit_workbench_acceptable_use_policy.md) by typing in the panel on the left (the console).
+You need to first acknowledge the [Acceptable Usage Policy](https://github.com/Public-Health-Scotland/R-Resources/blob/master/posit_workbench_acceptable_use_policy.md) by typing in the pane on the left (the console).
 
 
 Before starting any work in R, you will need to open a script by going to *File > New File > R Script*. Using a script allows you to save your work. 
 ---
 
-## The Four Panels
+## The Four Panes
 
 ```{r, echo=FALSE, out.width="90%", fig.align="center"}
 knitr::include_graphics("./imgs/four_panels.PNG")
@@ -120,7 +120,7 @@ knitr::include_graphics("./imgs/four_panels.PNG")
 
 ---
 
-## The Four Panels
+## The Four Panes
 
 **The script** is where you will do most of your work. This is where you should type your code, and this is what you should be saving as you go along. 
 
@@ -134,7 +134,7 @@ knitr::include_graphics("./imgs/four_panels.PNG")
 
 --
 
-**The Files/Plots/Help panel** contains a variety of different things. Using the file tab, you can browse through available files and folders. When you start producing plots, these will appear in this panel. Help files can be viewed here under the Help tab - these will help you to use different aspects of R programming.
+**The Files/Plots/Help pane** contains a variety of different things. Using the file tab, you can browse through available files and folders. When you start producing plots, these will appear in this pane. Help files can be viewed here under the Help tab - these will help you to use different aspects of R programming.
 ---
 
 ## From Excel to R
@@ -142,7 +142,7 @@ knitr::include_graphics("./imgs/four_panels.PNG")
 In Excel, you work with tables of data where each row of the table relates to an observation and each column relates to a variable within the data set. Multiple tables might be stored across multiple sheets
 --
 
-In R it is exactly the same, though we refer to the tables as *data frames*, and multiple data frames can be stored in the environment.
+In R it is exactly the same, though we refer to the tables as *data frames* or *tibbles*, and multiple data frames can be stored in the environment.
 
 --
 
