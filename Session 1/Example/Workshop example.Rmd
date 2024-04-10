@@ -1,0 +1,27 @@
+---
+title: 'Introduction to R: Workshop Example'
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## The Data
+
+The data for this session have been taken from the [Scottish Health and Social Care Open Datamart](https://www.opendata.nhs.scot/dataset). It consists of two data sets:
+
+- Delayed discharges by council area
+
+- Council Area Lookup file
+
+Both of these can be found at the linked web pages above, or they have been downloaded into *`r stringr::str_replace(getwd(), "Example", "Data")`*.
+
+## The Questions of Interest
+
+Within the data we are interested in delayed discharges from 2022 onwards. We want to pull out information on the total number of delayed bed days within each year for Code 9 reasons, non-code 9 reasons and a total for each council area and separated into two age groups: 18-74, and 75+.
+
+We then want to produce the same table, but this time for health board instead of council area.
+
+You might find the `str_sub()` and `str_detect()` functions from the `stringr` package useful.
+
