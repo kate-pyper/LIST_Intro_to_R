@@ -1,0 +1,84 @@
+---
+title: "Introduction to R"
+subtitle: "Section 2: Projects & Plotting"
+output:
+  xaringan::moon_reader:
+    css: ["xaringan-themer.css"]
+    lib_dir: libs
+    nature:
+      ratio: "16:9"
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```
+
+## This Session
+
+In this section, we'll start by introducing projects in R and why you should use them. Then we'll move on to plotting:
+
+- Introducing `{ggplot2}`
+- Basic plot types
+- Adding Layers
+- Themes and Styling
+- Combining plots using `{patchwork}`
+
+---
+
+class: center, middle, inverse
+
+# Projects
+
+---
+
+## Why use projects?
+
+
+---
+
+## Projects in Posit
+
+---
+
+class: center, middle, inverse2
+
+# `{ggplot2}`
+
+---
+
+## The Grammar of Graphics
+
+---
+
+## Geometries
+
+---
+
+## Aesthetics
+
+---
+
+class: center, middle, inverse3
+
+# Customising your plots
+
+---
+
+## Themes
+
+---
+class: center, middle, inverse4
+
+# Combining plots
+
+---
+
+## Simple layouts
+
+---
+
+## Custom layouts
+
