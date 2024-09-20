@@ -94,13 +94,135 @@ class: center, middle, inverse2
 
 ## The Grammar of Graphics
 
+`ggplot2` is based on a grammar of graphics, which is really just a way of thinking about building plots up from scratch. It is made up of several layers, some of which you'll interact with more than others:
+
+1. Data
+
+2. Mapping
+
+3. Statistics
+
+4. Scales
+
+5. Geometries
+
+6. Facets
+
+7. Coordinates
+
+8. Theme
+
+The main topics that we need to be concerned about to start building plots are *Data*, *Mapping* and *Geometries*.
+
+---
+
+## Data
+
+To start building your plot you have to specify what data that you are using. You can do this directly in the function `ggplot()` which initiates your plot:
+
+
+``` r
+ggplot(my_data)
+```
+
+Your data should be in the right format for plotting. Usually this means tidy format (each observation has its own row &amp; each variable has its own column).
+
+---
+
+## Mapping
+
+Mapping describes how the variables in your data correspond to features on your plot - e.g which variable goes on the x axis, which variable describes the colour of the points in your scatter plot.
+
+These are also called *aesthetics* and are defined within the `aes()` function. Each type of plot will have specific aesthetics that need to be mapped (e.g. a scatterplot will need `x` and `y`) These can be found in help files associated with each plot type.
+
+Where you put your mapping specification will depend on what you're plotting. 
+
+In general it will be appropriate to specify a global mapping within `ggplot()` alongside your data. This applies the same aesthetic mapping to each layer that you're plotting - e.g. you might want a line plot which also has the points on it - these would both share the same mapping
+
+If you're doing something that requires different data to be plotted on different layers then you can also specify your mapping within the individual geometry function. 
+
 ---
 
 ## Geometries
 
+Geometries are what defines the plot type. These are all functions which take the form `geom_x()` where `x` denotes what it is that you are trying to plot. Some common plot types and their geometries are:
+
+- scatter plot: `geom_point()`
+- box plot: `geom_boxplot()`
+- line plot: `geom_line()`
+- bar chart: `geom_bar()` or `geom_col()`
+- histogram: `geom_histogram()`
+
+We combine plotting components with a `+`, so that plotting a histogram of the variable `var` within a data frame called `my_data` would look like:
+
+
+``` r
+ggplot(my_data, aes(x = var)) +
+  geom_histogram()
+```
+
+Specifying `aes()` within `geom_histogram()` is also appropriate:
+
+
+``` r
+ggplot(my_data) +
+  geom_histogram(aes(x = var))
+```
 ---
 
-## Aesthetics
+## Putting it all together
+
+### Load packages and read in data
+
+
+``` r
+# All of these are from tidyverse so I'd consider loading tidyverse as a whole
+library(ggplot2)
+library(dplyr)
+library(readr)
+library(lubridate)
+
+# Project is open in the intro to R training folder so don't have to specify full path!
+waiting_times &lt;- read_csv("Section 2 - projects and plotting/Data/Waiting times.csv")
+```
+
+
+
+
+---
+## Putting it all together
+
+### Line and point chart - within 4 hour target by Week
+
+
+``` r
+waiting_times %&gt;% 
+  mutate(WeekEndingDate = ymd(WeekEndingDate)) %&gt;% 
+  group_by(WeekEndingDate) %&gt;%
+  summarise(within = sum(NumberWithin4HoursEpisode),
+            percent = 100*within/sum(NumberOfAttendancesEpisode)) %&gt;% 
+  ggplot(aes(x = WeekEndingDate, y = percent)) + 
+  geom_line() +
+  geom_point()
+```
+
+![](Section2_slides_files/figure-html/unnamed-chunk-6-1.png)&lt;!-- --&gt;
+
+---
+## Putting it all together
+
+### Bar chart - Average % meeting target by health board
+
+
+``` r
+waiting_times %&gt;% 
+  group_by(HBT) %&gt;%
+  summarise(PercentageWithin4HoursEpisode = mean(PercentageWithin4HoursEpisode)) %&gt;% 
+  ggplot(aes(y = HBT, x = PercentageWithin4HoursEpisode, fill = PercentageWithin4HoursEpisode &gt; 85)) + 
+  geom_col()
+```
+
+![](Section2_slides_files/figure-html/unnamed-chunk-7-1.png)&lt;!-- --&gt;
 
 ---
 
@@ -110,13 +232,22 @@ class: center, middle, inverse3
 
 ---
 
-## Themes
+## Plot Labels
+
+---
+
+## Scales
+
+---
+
+## Theme
 
 ---
 
 ## Customising themes
 
 ---
+
 class: center, middle, inverse4
 
 # Combining plots
