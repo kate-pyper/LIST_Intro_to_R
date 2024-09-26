@@ -234,9 +234,92 @@ class: center, middle, inverse3
 
 ## Plot Labels
 
+Since variable names in R aren't always the nicest, it's likely that you'll want to change the titles of your axes or legends at some points. This is easily done by using the `labs()` function. Tidying up the labels on the bar chart
+
+
+``` r
+waiting_times %&gt;% 
+  group_by(HBT) %&gt;%
+  summarise(PercentageWithin4HoursEpisode = mean(PercentageWithin4HoursEpisode)) %&gt;% 
+  ggplot(aes(y = HBT, x = PercentageWithin4HoursEpisode, fill = PercentageWithin4HoursEpisode &gt; 85)) + 
+  geom_col() +
+  labs(y = "Health Board",
+       x = "% within 4 hours",
+       fill = "&gt; 85% within 4 hours")
+```
+
+![](Section2_slides_files/figure-html/unnamed-chunk-8-1.png)&lt;!-- --&gt;
 ---
 
 ## Scales
+
+You can customise axes, colour scales etc. by playing around with the scales. You do this using scale functions which will generally have the form `scale_mapping_datatype()`. Some examples are below:
+
+- continuous variable on the y axis: `scale_y_continuous()`
+
+- discrete variable on the x axis: `scale_x_discrete()`
+
+- fill colour based on a group: `scale_fill_discrete()`
+
+- colour of points based on a continuous variable: `scale_colour_continuous()`
+ 
+Within the `fill` and `colour` scale functions, there is an argument called `type` which allows you to change the colours. For a discrete variable this is usually a vector or list of colours, and for a continuous variable it is a function which returns a colour scale. 
+
+For continuous colour scales, there are scale functions which make things a bit easier. `scale_colour_gradientn()` is a general function to produce a colour scale based on any number of colours.
+
+---
+
+## Colour Scales Example 1
+
+
+I've got the data used to create the bar chart in an object called `within_4` - If I wanted to use some PHS colours instead of the default:
+
+
+``` r
+ ggplot(within_4, aes(y = HBT, x = PercentageWithin4HoursEpisode, fill = PercentageWithin4HoursEpisode &gt; 85)) + 
+  geom_col() +
+  labs(y = "Health Board",
+       x = "% within 4 hours",
+       fill = "&gt; 85% within 4 hours") +
+  scale_fill_discrete(type = phsstyles::phs_colours(c("phs-magenta", "phs-teal")))
+```
+
+![](Section2_slides_files/figure-html/unnamed-chunk-10-1.png)&lt;!-- --&gt;
+---
+
+## Colour Scales Example 2
+
+
+``` r
+ggplot(within_4_time, aes(x = WeekEndingDate, y = percent, colour = percent)) + 
+  geom_line() +
+  geom_point() + 
+  labs(x = "Week Ending", y = "Percentage within 4 hours") + 
+  scale_colour_gradientn(colours = phsstyles::phs_colors(c("phs-magenta", "phs-teal")))
+```
+
+![](Section2_slides_files/figure-html/unnamed-chunk-11-1.png)&lt;!-- --&gt;
+
+---
+
+## Other Scales
+
+In some cases you may wish to present percentages or costs, or may just want to format your axis labels in a different way than they are already presented. 
+
+The `{scales}` package contains lots of convenient functions to help you do this. 
+
+Within the package functions are named to fit with the appropriate argument in your scales functions. Some useful functions are:
+
+### Label formatting
+
+- `label_percent()` - formats labels to have a percentage sign
+- `label_dollar()` - formats labels to have a monetary symbol
+- `label_comma()` - formats labels to so that big numbers have commas in them
+
+### Changing breaks
+
+- `breaks_extended()` - creates nice break points along the axis based on a value `n` that is passed in
+- `breaks_pretty()` - creates nice break points for date/time axes
 
 ---
 
