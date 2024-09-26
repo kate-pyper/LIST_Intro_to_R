@@ -276,7 +276,7 @@ I've got the data used to create the bar chart in an object called `within_4` - 
 
 
 ``` r
- ggplot(within_4, aes(y = HBT, x = PercentageWithin4HoursEpisode, fill = PercentageWithin4HoursEpisode &gt; 85)) + 
+ggplot(within_4, aes(y = HBT, x = PercentageWithin4HoursEpisode, fill = PercentageWithin4HoursEpisode &gt; 85)) + 
   geom_col() +
   labs(y = "Health Board",
        x = "% within 4 hours",
@@ -323,17 +323,96 @@ Within the package functions are named to fit with the appropriate argument in y
 
 ---
 
-## Theme
 
+
+## Label formatting example 1
+
+
+``` r
+ggplot(within_4, aes(y = HBT, x = PercentageWithin4HoursEpisode, fill = PercentageWithin4HoursEpisode &gt; 85)) + 
+  geom_col() +
+  labs(y = "Health Board",
+       x = "% within 4 hours",
+       fill = "&gt; 85% within 4 hours") +
+  scale_fill_discrete(type = phsstyles::phs_colours(c("phs-magenta", "phs-teal"))) +
+  scale_x_continuous(labels = scales::label_percent(scale = 1))
+```
+
+![](Section2_slides_files/figure-html/unnamed-chunk-12-1.png)&lt;!-- --&gt;
 ---
 
-## Customising themes
+## Label formatting example 2
+
+
+``` r
+ggplot(within_4_time, aes(x = WeekEndingDate, y = percent, colour = percent)) + 
+  geom_line() +
+  geom_point() + 
+  labs(x = "Week Ending", y = "Percentage within 4 hours") + 
+  scale_colour_gradientn(colours = phsstyles::phs_colors(c("phs-magenta", "phs-teal")), labels = scales::label_percent(scale = 1)) + 
+  scale_y_continuous(labels = scales::label_percent(scale = 1))
+```
+
+![](Section2_slides_files/figure-html/unnamed-chunk-13-1.png)&lt;!-- --&gt;
+---
+
+## Theme
+
+You may want to change how the plot looks overall. This might include font size, font colour, background colour, grid lines...These are all controlled using *themes*. There are several themes built into ggplot2, all of which have the form `theme_name()` (e.g. `theme_bw()` is one of the built in themes)
+
+A further option is to use the PHS theme from the `{phsstyles}` package which is used in the same way as the other theme functions.
+
+
+``` r
+ggplot(within_4_time, aes(x = WeekEndingDate, y = percent, colour = percent)) + 
+  geom_line() +
+  geom_point() + 
+  labs(x = "Week Ending", y = "Percentage within 4 hours") + 
+  scale_colour_gradientn(colours = phsstyles::phs_colors(c("phs-magenta", "phs-teal"))) + 
+  phsstyles::theme_phs()
+```
+
+![](Section2_slides_files/figure-html/unnamed-chunk-14-1.png)&lt;!-- --&gt;
 
 ---
 
 class: center, middle, inverse4
 
 # Combining plots
+
+---
+
+## Motivation
+
+When we're trying to tell a story with data, we usually need more than one visualisation to do that. Sometimes it helps with clarity to separate things out, and in other times we need separate plots altogether to get the full picture. 
+
+There are two main ways of getting multiple plots on one figure and which one you use will depend on exactly what you're trying to do:
+
+- If you have a grouping column and want to separate out the same plot by group on a single figure you would use *facets*
+
+- If you are combining multiple plots more generally there are several packages that will allow you to do this - my favourite is `{patchwork}`
+
+---
+
+## Facets
+
+Facets combine similar plots of data across different groups into one figure. It is added to your plot in the same way as any other plot layer vi the `facet_wrap()` function. For example if I have the weekly average percentage seen within 4 hours by health board this might look like:
+
+
+``` r
+waiting_times %&gt;% 
+  group_by(WeekEndingDate, HBT) %&gt;% 
+  summarise(percent_within = sum(NumberWithin4HoursEpisode)/sum(NumberOfAttendancesEpisode)) %&gt;% 
+  ggplot(aes(x = ymd(WeekEndingDate), y = percent_within)) + 
+  geom_point() + 
+  geom_line() +
+  facet_wrap(~HBT)
+```
+---
+
+## Facets
+
+![](Section2_slides_files/figure-html/unnamed-chunk-16-1.png)&lt;!-- --&gt;
 
 ---
 
