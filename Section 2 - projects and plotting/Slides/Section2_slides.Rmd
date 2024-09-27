@@ -416,9 +416,94 @@ waiting_times %>%
 
 ---
 
+## Patchwork
+
+The `{patchwork}` package provides a convenient way to combine multiple plots onto one figure. 
+
+The easiest way to do this is to store your plots within objects in R and then combining these objects using appropriate code:
+
+```{r}
+library(patchwork)
+
+p1 <- waiting_times %>% 
+  mutate(WeekEndingDate = ymd(WeekEndingDate)) %>% 
+  group_by(WeekEndingDate) %>%
+  summarise(within = sum(NumberWithin4HoursEpisode),
+            percent = 100*within/sum(NumberOfAttendancesEpisode)) %>% 
+  ggplot(aes(x = WeekEndingDate, y = percent)) + 
+  geom_line() +
+  geom_point()
+
+p2 <- waiting_times %>% 
+  group_by(WeekEndingDate, HBT) %>% 
+  summarise(percent_within = sum(NumberWithin4HoursEpisode)/sum(NumberOfAttendancesEpisode)) %>% 
+  ggplot(aes(x = ymd(WeekEndingDate), y = percent_within, colour = HBT)) + 
+  geom_point() + 
+  geom_line()
+
+p3 <- ggplot(within_4, aes(y = HBT, x = PercentageWithin4HoursEpisode, fill = PercentageWithin4HoursEpisode > 85)) + 
+  geom_col() +
+  labs(y = "Health Board",
+       x = "% within 4 hours",
+       fill = "> 85% within 4 hours") +
+  scale_fill_discrete(type = phsstyles::phs_colours(c("phs-magenta", "phs-teal"))) +
+  scale_x_continuous(labels = scales::label_percent(scale = 1))
+
+```
+
+---
+
 ## Simple layouts
+
+The simplest way to combine plots in patchwork is to just add them together:
+
+```{r}
+p1 + p2 + p3
+```
+
+the package will try to put these together in as helpful a way as possible within a grid format.
+---
+
+
+## Simple layouts
+
+You can customise the grid a bit more using `plot_layout()` by specifying `ncol` and/or `nrow`: 
+
+```{r fig.height = 6}
+p1 + p2 + p3 + plot_layout(ncol = 2)
+```
+
+---
+
+## Simple layouts
+
+We can use a combination of `+` and `/` to get a slightly more bespoke layout:
+
+```{r, fig.height = 6}
+(p1 + p2) / p3
+```
+
+using `/` essentially means take a new line.
+---
+
+## Simple layouts
+
+We can customise this a bit more using `plot_layout()` to specify heights and widths:
+
+```{r, fig.height = 6}
+(p1 + p2) / p3 + plot_layout(heights = c(0.3, 0.7))
+```
 
 ---
 
 ## Custom layouts
+
+We can use the `design` argument of `plot_layout()` to make something very bespoke if required. For example if we want the bar chart to be the same size as the line charts, but centered on the second row:
+
+```{r, fig.height = 6}
+layout <- "AABB
+           #CC#"
+
+p1 + p2 + p3 + plot_layout(design = layout)
+```
 
